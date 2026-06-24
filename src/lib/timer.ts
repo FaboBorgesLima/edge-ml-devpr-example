@@ -10,6 +10,10 @@ export class Timer {
         return new Timer(Date.now());
     }
 
+    static wait(ms: number): Promise<void> {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
     static wrap<T>(fn: () => Promise<T>): () => Promise<[T, number]> {
         return async () => {
             const timer = Timer.get();

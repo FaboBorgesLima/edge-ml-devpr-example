@@ -1,0 +1,79 @@
+export async function render(app: HTMLElement) {
+    document.title = "Edge ML Demo";
+
+    app.innerHTML = `
+    <div class="min-h-screen bg-slate-950 text-slate-100 selection:bg-amber-300 selection:text-slate-950">
+        <div class="mx-auto max-w-6xl px-5 py-8 md:px-8 md:py-10">
+            <header class="rounded-3xl border border-slate-800 bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.22),_transparent_45%),radial-gradient(circle_at_bottom_right,_rgba(251,191,36,0.18),_transparent_45%),rgba(15,23,42,0.8)] p-6 md:p-8">
+                <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                    <div class="space-y-3">
+                        <span class="inline-flex rounded-full border border-cyan-300/40 bg-cyan-300/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-cyan-200">Edge AI Playground</span>
+                        <h1 class="text-3xl font-black tracking-tight text-white md:text-5xl">Inferencia local em WASM e WebGPU</h1>
+                        <p class="max-w-3xl text-sm text-slate-300 md:text-base">Catalogo de demos para provar que ML pode rodar no cliente com latencia baixa e sem trafego de dados sensiveis para nuvem.</p>
+                    </div>
+                    <div class="rounded-2xl border border-slate-700/70 bg-slate-900/70 p-4 font-mono text-xs text-slate-300">
+                        <div class="flex items-center justify-between gap-4"><span>Status do palco</span><span class="text-emerald-300">ONLINE</span></div>
+                        <div class="mt-2 text-[11px] text-slate-400">3 demos prontas · 3 em desenvolvimento</div>
+                    </div>
+                </div>
+            </header>
+
+            <section class="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+                <a href="/evaluation" class="group rounded-2xl border border-emerald-600/40 bg-emerald-950/20 p-5 transition hover:-translate-y-1 hover:border-emerald-400">
+                    <div class="mb-4 flex items-center justify-between">
+                        <span class="text-xs font-bold uppercase tracking-[0.16em] text-emerald-300">Disponivel</span>
+                        <span class="rounded-full bg-emerald-400/20 px-2 py-0.5 text-[10px] font-mono text-emerald-200">BERT</span>
+                    </div>
+                    <h2 class="text-xl font-extrabold text-white">Analise de Sentimento</h2>
+                    <p class="mt-3 text-sm text-slate-300">Classificacao de texto multilíngue com telemetria de carga e inferencia em tempo real.</p>
+                </a>
+
+                <a href="/vlm" class="group rounded-2xl border border-cyan-600/40 bg-cyan-950/20 p-5 transition hover:-translate-y-1 hover:border-cyan-400">
+                    <div class="mb-4 flex items-center justify-between">
+                        <span class="text-xs font-bold uppercase tracking-[0.16em] text-cyan-300">Disponivel</span>
+                        <span class="rounded-full bg-cyan-400/20 px-2 py-0.5 text-[10px] font-mono text-cyan-200">Florence-2</span>
+                    </div>
+                    <h2 class="text-xl font-extrabold text-white">VLM Master Scan</h2>
+                    <p class="mt-3 text-sm text-slate-300">Descricao, OCR, deteccao e inspecao livre com grounding direto na imagem.</p>
+                </a>
+
+                <a href="/llm" class="group rounded-2xl border border-amber-600/40 bg-amber-950/20 p-5 transition hover:-translate-y-1 hover:border-amber-400">
+                    <div class="mb-4 flex items-center justify-between">
+                        <span class="text-xs font-bold uppercase tracking-[0.16em] text-amber-300">Disponivel</span>
+                        <span class="rounded-full bg-amber-400/20 px-2 py-0.5 text-[10px] font-mono text-amber-200">Qwen2.5</span>
+                    </div>
+                    <h2 class="text-xl font-extrabold text-white">LLM Chat Local</h2>
+                    <p class="mt-3 text-sm text-slate-300">Conversa com contexto, cronometro de inferencia e execucao 100% no navegador.</p>
+                </a>
+
+                <article class="rounded-2xl border border-slate-700 bg-slate-900/60 p-5 opacity-85">
+                    <div class="mb-4 flex items-center justify-between">
+                        <span class="text-xs font-bold uppercase tracking-[0.16em] text-slate-300">Em breve</span>
+                        <span class="rounded-full bg-slate-700/60 px-2 py-0.5 text-[10px] font-mono text-slate-300">MiniLM</span>
+                    </div>
+                    <h2 class="text-xl font-extrabold text-slate-100">Busca Semantica</h2>
+                    <p class="mt-3 text-sm text-slate-400">Ranking semantico de textos com embedding local para cenarios de busca privada.</p>
+                </article>
+
+                <article class="rounded-2xl border border-slate-700 bg-slate-900/60 p-5 opacity-85">
+                    <div class="mb-4 flex items-center justify-between">
+                        <span class="text-xs font-bold uppercase tracking-[0.16em] text-slate-300">Em breve</span>
+                        <span class="rounded-full bg-slate-700/60 px-2 py-0.5 text-[10px] font-mono text-slate-300">RAG</span>
+                    </div>
+                    <h2 class="text-xl font-extrabold text-slate-100">Retrieval-Augmented Generation</h2>
+                    <p class="mt-3 text-sm text-slate-400">Pipeline local de recuperacao + geracao para responder sobre base privada.</p>
+                </article>
+
+                <article class="rounded-2xl border border-slate-700 bg-slate-900/60 p-5 opacity-85">
+                    <div class="mb-4 flex items-center justify-between">
+                        <span class="text-xs font-bold uppercase tracking-[0.16em] text-slate-300">Em breve</span>
+                        <span class="rounded-full bg-slate-700/60 px-2 py-0.5 text-[10px] font-mono text-slate-300">YOLOv8</span>
+                    </div>
+                    <h2 class="text-xl font-extrabold text-slate-100">Deteccao de Objetos</h2>
+                    <p class="mt-3 text-sm text-slate-400">Deteccao em video/imagem para inspeção visual e alertas em edge devices.</p>
+                </article>
+            </section>
+        </div>
+    </div>
+    `;
+}

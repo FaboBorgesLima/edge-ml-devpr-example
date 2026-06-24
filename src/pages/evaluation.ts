@@ -4,8 +4,10 @@ import {
 } from "../services/evaluation-service";
 import { Timer } from "../lib/timer";
 import { renderMs } from "../lib/render-ms";
+import { startLiveMs } from "../lib/live-ms";
 import { resizeTextArea } from "../lib/resize-text-area";
 import { TextClassificationPipeline } from "@huggingface/transformers";
+import { hasGPU } from "../lib/has-gpu";
 
 export async function render(app: HTMLElement) {
     app.innerHTML = `
@@ -25,7 +27,7 @@ export async function render(app: HTMLElement) {
                     </div>
                     
                     <div class="flex gap-2 text-[11px] font-mono text-slate-400">
-                        <span class="bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700">WASM</span>
+                        <span id="hardware-badge" class="bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700">WASM</span>
                         <span class="bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700">Single-Thread</span>
                     </div>
                 </div>
@@ -111,6 +113,11 @@ async function boot() {
     const evaluationTimerDiv = document.getElementById(
         "evaluation-timer",
     ) as HTMLSpanElement;
+    const hardwareBadge = document.getElementById(
+        "hardware-badge",
+    ) as HTMLSpanElement;
+
+    hardwareBadge.innerText = (await hasGPU()) ? "WebGPU" : "WASM";
 
     const statusText = document.getElementById(
         "status-text",
@@ -120,25 +127,29 @@ async function boot() {
         "status-ping",
     ) as HTMLSpanElement;
 
-    // Trava a UI enquanto baixa
+    // PT: Bloqueamos entrada durante a alocacao inicial do modelo.
+    // EN: Input stays locked while the model is being allocated.
     textInput.disabled = true;
 
-    const [pipe, downloadTime] = await Timer.wrap(getEvaluationPipeline)();
+    const loadingTicker = startLiveMs(downloadTimerDiv, 20);
+    const [pipe, downloadTime] = await Timer.wrap(async () =>
+        getEvaluationPipeline(await hasGPU()),
+    )();
+    loadingTicker.stop(downloadTime);
 
     renderMs(downloadTimerDiv, downloadTime);
 
-    // O MOMENTO "MIC DROP" DA INICIALIZAÇÃO:
     statusText.innerText = "Modelo 100% Carregado na RAM";
     statusText.className =
         "text-xs font-bold tracking-wider text-emerald-400 uppercase";
     statusDot.className =
         "relative inline-flex rounded-full h-3 w-3 bg-emerald-500";
-    statusPing.remove(); // Mata o efeito piscante
+    statusPing.remove();
 
     textInput.disabled = false;
     textInput.placeholder =
         "Ex: O Wi-Fi deste evento está surpreendentemente rápido...";
-    textInput.focus(); // <--- ATENÇÃO AQUI: Foco automático para você não caçar o mouse no palco
+    textInput.focus();
 
     textInput.addEventListener("input", async (event) => {
         const target = event.target as HTMLTextAreaElement;
@@ -174,11 +185,11 @@ async function updateEvaluation(
 
     renderMs(timerDiv, responseTime);
 
-    // Atualiza o texto
     const scoreFormatado = (result.score * 100).toFixed(1);
     evaluationResult.innerText = `${result.label} (${scoreFormatado} de certeza)`;
 
-    // Atualiza o Emoji de Palco baseado na label do BERT
+    // PT: Mapeamento simples de classes para visual de resposta em palco.
+    // EN: Simple class-to-emoji mapping for live stage feedback.
     const emojiEl = document.getElementById(
         "sentiment-emoji",
     ) as HTMLSpanElement;

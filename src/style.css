@@ -1,1 +1,36 @@
 @import "tailwindcss";
+
+:root {
+    font-family: "Space Grotesk", "Segoe UI", sans-serif;
+    color: #e2e8f0;
+    background-color: #020617;
+}
+
+html,
+body {
+    min-height: 100%;
+}
+
+body {
+    background:
+        radial-gradient(
+            circle at 12% 12%,
+            rgba(56, 189, 248, 0.12),
+            transparent 34%
+        ),
+        radial-gradient(
+            circle at 86% 0%,
+            rgba(251, 191, 36, 0.1),
+            transparent 38%
+        ),
+        radial-gradient(
+            circle at 80% 85%,
+            rgba(16, 185, 129, 0.08),
+            transparent 30%
+        ),
+        #020617;
+}
+
+.font-mono {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+}
