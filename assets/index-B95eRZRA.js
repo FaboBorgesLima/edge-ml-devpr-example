@@ -127,7 +127,7 @@ ${r}${a}`+i.repeat(e)+`${r}`,o}function zp(e,t,n,r){return`${t}${r}`+n.repeat(e)
 						<div>
 							<div class="flex items-center gap-2">
 								<span class="rounded-full border border-amber-300/50 bg-amber-300/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-amber-200">Edge LLM</span>
-								<a href="../" class="text-xs text-slate-400 underline decoration-slate-600 hover:text-slate-200">voltar ao catalogo</a>
+								<a href="" class="text-xs text-slate-400 underline decoration-slate-600 hover:text-slate-200">voltar ao catalogo</a>
 							</div>
 							<h1 class="mt-2 text-2xl font-black tracking-tight text-white md:text-4xl">Chat local com Gemma-3-270M</h1>
 							<p class="mt-2 max-w-2xl text-sm text-slate-300">Pergunte, responda e acompanhe o custo de carga e inferencia sem enviar prompts para servidor.</p>
@@ -364,4 +364,4 @@ ${r}${a}`+i.repeat(e)+`${r}`,o}function zp(e,t,n,r){return`${t}${r}`+n.repeat(e)
             </section>
         </div>
     </div>
-    `}document.addEventListener(`DOMContentLoaded`,VA);async function VA(){let e=document.getElementById(`app`);return window.location.pathname===`/evaluation`?Wk(e):window.location.pathname===`/vlm`?xA(e):window.location.pathname===`/llm`?Xk(e):BA(e)}
+    `}document.addEventListener(`DOMContentLoaded`,VA);async function VA(){let e=document.getElementById(`app`),t=`/edge-ml-devpr-example/`;return window.location.pathname===`${t}evaluation`?Wk(e):window.location.pathname===`${t}vlm`?xA(e):window.location.pathname===`${t}llm`?Xk(e):BA(e)}
