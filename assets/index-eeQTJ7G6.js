@@ -127,7 +127,7 @@ ${r}${a}`+i.repeat(e)+`${r}`,o}function zp(e,t,n,r){return`${t}${r}`+n.repeat(e)
 						<div>
 							<div class="flex items-center gap-2">
 								<span class="rounded-full border border-amber-300/50 bg-amber-300/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-amber-200">Edge LLM</span>
-								<a href="/" class="text-xs text-slate-400 underline decoration-slate-600 hover:text-slate-200">voltar ao catalogo</a>
+								<a href="../" class="text-xs text-slate-400 underline decoration-slate-600 hover:text-slate-200">voltar ao catalogo</a>
 							</div>
 							<h1 class="mt-2 text-2xl font-black tracking-tight text-white md:text-4xl">Chat local com Gemma-3-270M</h1>
 							<p class="mt-2 max-w-2xl text-sm text-slate-300">Pergunte, responda e acompanhe o custo de carga e inferencia sem enviar prompts para servidor.</p>
@@ -308,7 +308,7 @@ ${r}${a}`+i.repeat(e)+`${r}`,o}function zp(e,t,n,r){return`${t}${r}`+n.repeat(e)
             </header>
 
             <section class="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-                <a href="/evaluation" class="group rounded-2xl border border-emerald-600/40 bg-emerald-950/20 p-5 transition hover:-translate-y-1 hover:border-emerald-400">
+                <a href="./evaluation" class="group rounded-2xl border border-emerald-600/40 bg-emerald-950/20 p-5 transition hover:-translate-y-1 hover:border-emerald-400">
                     <div class="mb-4 flex items-center justify-between">
                         <span class="text-xs font-bold uppercase tracking-[0.16em] text-emerald-300">Disponivel</span>
                         <span class="rounded-full bg-emerald-400/20 px-2 py-0.5 text-[10px] font-mono text-emerald-200">BERT</span>
@@ -317,7 +317,7 @@ ${r}${a}`+i.repeat(e)+`${r}`,o}function zp(e,t,n,r){return`${t}${r}`+n.repeat(e)
                     <p class="mt-3 text-sm text-slate-300">Classificacao de texto multilíngue com telemetria de carga e inferencia em tempo real.</p>
                 </a>
 
-                <a href="/vlm" class="group rounded-2xl border border-cyan-600/40 bg-cyan-950/20 p-5 transition hover:-translate-y-1 hover:border-cyan-400">
+                <a href="./vlm" class="group rounded-2xl border border-cyan-600/40 bg-cyan-950/20 p-5 transition hover:-translate-y-1 hover:border-cyan-400">
                     <div class="mb-4 flex items-center justify-between">
                         <span class="text-xs font-bold uppercase tracking-[0.16em] text-cyan-300">Disponivel</span>
                         <span class="rounded-full bg-cyan-400/20 px-2 py-0.5 text-[10px] font-mono text-cyan-200">Florence-2</span>
@@ -326,7 +326,7 @@ ${r}${a}`+i.repeat(e)+`${r}`,o}function zp(e,t,n,r){return`${t}${r}`+n.repeat(e)
                     <p class="mt-3 text-sm text-slate-300">Descricao, OCR, deteccao e inspecao livre com grounding direto na imagem.</p>
                 </a>
 
-                <a href="/llm" class="group rounded-2xl border border-amber-600/40 bg-amber-950/20 p-5 transition hover:-translate-y-1 hover:border-amber-400">
+                <a href="./llm" class="group rounded-2xl border border-amber-600/40 bg-amber-950/20 p-5 transition hover:-translate-y-1 hover:border-amber-400">
                     <div class="mb-4 flex items-center justify-between">
                         <span class="text-xs font-bold uppercase tracking-[0.16em] text-amber-300">Disponivel</span>
                         <span class="rounded-full bg-amber-400/20 px-2 py-0.5 text-[10px] font-mono text-amber-200">Qwen2.5</span>
