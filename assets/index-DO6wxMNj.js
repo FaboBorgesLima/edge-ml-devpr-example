@@ -270,11 +270,11 @@ Please report this to https://github.com/markedjs/marked.`,e){let e=`<p>An error
 					</section>
 
 					<aside class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
-                        <h2 class="text-sm font-black uppercase tracking-wider text-white">Quick prompts</h2>
+                        <h2 class="text-sm font-black uppercase tracking-wider text-white">Quick prompts (simple)</h2>
 						<div class="mt-3 space-y-2">
-                            <button data-prompt="Give 3 short reasons why edge AI can reduce latency." class="quick-prompt w-full rounded-lg border border-slate-700 px-3 py-2 text-left text-xs text-slate-300 hover:border-cyan-400/70">Why can edge AI reduce latency?</button>
-                            <button data-prompt="Write a short Conventional Commit message for a token auth fix in middleware." class="quick-prompt w-full rounded-lg border border-slate-700 px-3 py-2 text-left text-xs text-slate-300 hover:border-cyan-400/70">Create a commit message</button>
-                            <button data-prompt="Compare privacy risks of cloud LLMs vs local LLMs in 4 bullets." class="quick-prompt w-full rounded-lg border border-slate-700 px-3 py-2 text-left text-xs text-slate-300 hover:border-cyan-400/70">Cloud vs local privacy</button>
+                            <button data-prompt="What is edge AI? Answer in 2 short sentences." class="quick-prompt w-full rounded-lg border border-slate-700 px-3 py-2 text-left text-xs text-slate-300 hover:border-cyan-400/70">What is edge AI?</button>
+                            <button data-prompt="Give 3 short benefits of running AI locally." class="quick-prompt w-full rounded-lg border border-slate-700 px-3 py-2 text-left text-xs text-slate-300 hover:border-cyan-400/70">3 benefits of local AI</button>
+                            <button data-prompt="Write a very short commit message for a bug fix." class="quick-prompt w-full rounded-lg border border-slate-700 px-3 py-2 text-left text-xs text-slate-300 hover:border-cyan-400/70">Simple commit message</button>
 						</div>
                         <p class="mt-4 text-[11px] text-slate-500">Responses may be slower in WASM mode.</p>
 					</aside>
