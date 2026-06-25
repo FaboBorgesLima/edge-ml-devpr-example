@@ -4,11 +4,13 @@ import {
     type Message,
     type PretrainedModelOptions,
 } from "@huggingface/transformers";
+import { hasFp16Q4GPUSupport } from "../lib/has-fp16-q4-gpu-support";
 
 export interface AvailableModel {
     key: string;
     name: string;
-    webgpuDType: PretrainedModelOptions["dtype"];
+    webgpuDType(): Promise<PretrainedModelOptions["dtype"]>;
+    canUseWebGPU(): Promise<boolean>;
     wasmDType: PretrainedModelOptions["dtype"];
 }
 
@@ -16,30 +18,49 @@ export const AVAILABLE_MODELS: readonly AvailableModel[] = [
     {
         key: "HuggingFaceTB/SmolLM2-360M-Instruct",
         name: "SmolLM2 360M (Recommended)",
-        webgpuDType: "q4f16",
+        canUseWebGPU: async () => {
+            return await hasFp16Q4GPUSupport();
+        },
+        webgpuDType: async () => {
+            return "q4f16";
+        },
         wasmDType: "int8",
     },
     {
         key: "HuggingFaceTB/SmolLM2-135M-Instruct",
         name: "SmolLM2 135M (Light)",
-        webgpuDType: "q4f16",
+        canUseWebGPU: async () => {
+            return await hasFp16Q4GPUSupport();
+        },
+        webgpuDType: async () => {
+            return "q4f16";
+        },
         wasmDType: "int8",
     },
     {
-        key: "onnx-community/gemma-3-270m-it-ONNX",
-        name: "Gemma 3 270M (Heavy)",
-        webgpuDType: "q4f16",
-        wasmDType: "fp16",
+        key: "onnx-community/Qwen2.5-0.5B-Instruct",
+        name: "Qwen2.5 0.5B (Heavy)",
+        canUseWebGPU: async () => {
+            return await hasFp16Q4GPUSupport();
+        },
+        webgpuDType: async () => {
+            return "q4f16";
+        },
+        wasmDType: "int8",
     },
 ];
 
-export async function getGenerator(
-    useGpu: boolean,
-    availableModel: AvailableModel,
-) {
+export async function getGenerator(availableModel: AvailableModel) {
+    if (!(await availableModel.canUseWebGPU())) {
+        return await pipeline("text-generation", availableModel.key, {
+            device: "wasm",
+            dtype: availableModel.wasmDType,
+        });
+    }
+
     return await pipeline("text-generation", availableModel.key, {
-        device: useGpu ? "webgpu" : "wasm",
-        dtype: useGpu ? availableModel.webgpuDType : availableModel.wasmDType,
+        device: "webgpu",
+        dtype: await availableModel.webgpuDType(),
     });
 }
 

@@ -59,12 +59,12 @@ export async function render(app: HTMLElement) {
         "Microsoft Florence-2 - Master Scan and Open Inspection in Browser";
 
     app.innerHTML = `
-        <div class="min-h-screen bg-slate-950 text-slate-100 p-4 md:p-8 selection:bg-cyan-400 selection:text-slate-950">
+        <div class="min-h-screen bg-slate-950 text-slate-100 p-4 md:p-8 selection:bg-emerald-400 selection:text-slate-950">
             <div class="max-w-6xl mx-auto space-y-6">
                 <header class="border-b border-slate-800 pb-5 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                     <div>
                         <div class="flex items-center gap-2">
-                            <span class="px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.2em] bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 rounded">Edge VLM</span>
+                            <span class="px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.2em] bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 rounded">Edge VLM</span>
                             <a href="${import.meta.env.BASE_URL}" class="text-xs text-slate-400 underline decoration-slate-600 hover:text-slate-200">back to catalog</a>
                         </div>
                         <div class="mt-2 flex items-center gap-2">
@@ -75,35 +75,35 @@ export async function render(app: HTMLElement) {
                     <div class="grid grid-cols-2 gap-3 text-xs font-mono bg-slate-900/70 p-3 rounded-xl border border-slate-800 min-w-[280px]">
                         <div>
                             <div class="text-slate-500 uppercase text-[10px] tracking-wider">Model Load</div>
-                            <div id="download-timer" class="text-amber-400 font-bold text-base">Time: --ms</div>
+                            <div id="download-timer" class="text-emerald-400 font-bold text-base">Time: --ms</div>
                         </div>
                         <div>
                             <div class="text-slate-500 uppercase text-[10px] tracking-wider">Master Scan</div>
-                            <div id="evaluation-timer" class="text-cyan-300 font-bold text-base">Time: --ms</div>
+                            <div id="evaluation-timer" class="text-emerald-300 font-bold text-base">Time: --ms</div>
                         </div>
                     </div>
                 </header>
 
                 <section class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4 md:p-5 space-y-3">
                     <div class="flex items-center justify-between gap-3 flex-wrap">
-                        <span id="scan-stage" class="text-xs md:text-sm font-bold tracking-wide text-cyan-300 uppercase">Initializing model...</span>
+                        <span id="scan-stage" class="text-xs md:text-sm font-bold tracking-wide text-emerald-300 uppercase">Initializing model...</span>
                         <span class="text-[10px] font-mono px-2 py-1 rounded border border-emerald-900/50 bg-emerald-950/40 text-emerald-300">
                             <span id="hardware-badge">Detecting hardware...</span>
                         </span>
                     </div>
                     <div class="h-2 rounded-full bg-slate-800 overflow-hidden">
-                        <div id="scan-progress-bar" class="h-full w-0 bg-linear-to-r from-cyan-400 to-indigo-400 transition-all duration-200"></div>
+                        <div id="scan-progress-bar" class="h-full w-0 bg-linear-to-r from-emerald-400 to-emerald-400 transition-all duration-200"></div>
                     </div>
                     <div class="text-[11px] text-slate-500">The expensive tensor pass runs once per image.</div>
                 </section>
 
                 <section class="grid grid-cols-1 lg:grid-cols-2 gap-5">
                     <div class="space-y-4">
-                        <label id="drop-area" class="block relative border-2 border-dashed border-slate-700 hover:border-cyan-400/70 rounded-2xl bg-slate-900/60 p-4 cursor-pointer transition-colors">
+                        <label id="drop-area" class="block relative border-2 border-dashed border-slate-700 hover:border-emerald-400/70 rounded-2xl bg-slate-900/60 p-4 cursor-pointer transition-colors">
                             <input id="file-input" type="file" accept="image/*" class="hidden" />
                             <div id="upload-prompt" class="text-center py-12 space-y-2">
                                 <div class="text-5xl">🛰️</div>
-                                <div class="font-bold text-cyan-300 text-sm">Drop an image to start Master Scan</div>
+                                <div class="font-bold text-emerald-300 text-sm">Drop an image to start Master Scan</div>
                                 <p class="text-slate-500 text-xs">After the base scan, all panels respond instantly.</p>
                             </div>
                             <canvas id="image-canvas" class="hidden w-full h-auto rounded-xl border border-slate-700/60 bg-slate-950"></canvas>
@@ -116,18 +116,18 @@ export async function render(app: HTMLElement) {
                                 <input
                                     id="free-query-input"
                                     type="text"
-                                    class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-cyan-400"
+                                    class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-400"
                                     placeholder="What should be inspected? Example: rusty screws"
                                     disabled
                                 />
-                                <button type="submit" class="px-3 py-2 rounded-lg bg-cyan-500 text-slate-950 text-xs font-bold uppercase tracking-wide disabled:opacity-40" disabled id="free-query-submit">
+                                <button type="submit" class="px-3 py-2 rounded-lg bg-emerald-500 text-slate-950 text-xs font-bold uppercase tracking-wide disabled:opacity-40" disabled id="free-query-submit">
                                     Inspect
                                 </button>
                             </div>
                             <div class="flex flex-wrap gap-2">
-                                <button type="button" data-alert="people without safety helmets" class="quick-alert px-2.5 py-1 rounded-full text-[11px] border border-slate-700 text-slate-300 hover:border-cyan-400/60">Helmet check</button>
-                                <button type="button" data-alert="readable barcode" class="quick-alert px-2.5 py-1 rounded-full text-[11px] border border-slate-700 text-slate-300 hover:border-cyan-400/60">Barcode check</button>
-                                <button type="button" data-alert="open windows" class="quick-alert px-2.5 py-1 rounded-full text-[11px] border border-slate-700 text-slate-300 hover:border-cyan-400/60">Open windows</button>
+                                <button type="button" data-alert="people without safety helmets" class="quick-alert px-2.5 py-1 rounded-full text-[11px] border border-slate-700 text-slate-300 hover:border-emerald-400/60">Helmet check</button>
+                                <button type="button" data-alert="readable barcode" class="quick-alert px-2.5 py-1 rounded-full text-[11px] border border-slate-700 text-slate-300 hover:border-emerald-400/60">Barcode check</button>
+                                <button type="button" data-alert="open windows" class="quick-alert px-2.5 py-1 rounded-full text-[11px] border border-slate-700 text-slate-300 hover:border-emerald-400/60">Open windows</button>
                             </div>
                         </form>
                     </div>
@@ -135,7 +135,7 @@ export async function render(app: HTMLElement) {
                     <div class="rounded-2xl border border-slate-800 bg-slate-900/70 overflow-hidden flex flex-col min-h-[420px]">
                         <div class="p-3 border-b border-slate-800 bg-slate-950/60">
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                                <button id="panel-description" class="panel-btn px-2 py-2 rounded-lg text-[11px] font-bold bg-cyan-500 text-slate-950">General Description</button>
+                                <button id="panel-description" class="panel-btn px-2 py-2 rounded-lg text-[11px] font-bold bg-emerald-500 text-slate-950">General Description</button>
                                 <button id="panel-ocr" class="panel-btn px-2 py-2 rounded-lg text-[11px] font-bold text-slate-300 border border-slate-700">Read Text (OCR)</button>
                                 <button id="panel-detection" class="panel-btn px-2 py-2 rounded-lg text-[11px] font-bold text-slate-300 border border-slate-700">Detailed Detection</button>
                                 <button id="panel-grid" class="panel-btn px-2 py-2 rounded-lg text-[11px] font-bold text-slate-300 border border-slate-700">Grid Scan</button>
@@ -256,16 +256,16 @@ function wireUpload(dom: VlmDom) {
 
     dom.dropArea.addEventListener("dragover", (event) => {
         event.preventDefault();
-        dom.dropArea.classList.add("border-cyan-400");
+        dom.dropArea.classList.add("border-emerald-400");
     });
 
     dom.dropArea.addEventListener("dragleave", () => {
-        dom.dropArea.classList.remove("border-cyan-400");
+        dom.dropArea.classList.remove("border-emerald-400");
     });
 
     dom.dropArea.addEventListener("drop", async (event) => {
         event.preventDefault();
-        dom.dropArea.classList.remove("border-cyan-400");
+        dom.dropArea.classList.remove("border-emerald-400");
         const file = event.dataTransfer?.files?.[0];
         if (!file || !file.type.startsWith("image/")) return;
 
@@ -438,7 +438,7 @@ function paintPanelButtons(dom: VlmDom) {
         const btn = dom.panelButtons[panel];
         if (state.activePanel === panel) {
             btn.className =
-                "panel-btn px-2 py-2 rounded-lg text-[11px] font-bold bg-cyan-500 text-slate-950";
+                "panel-btn px-2 py-2 rounded-lg text-[11px] font-bold bg-emerald-500 text-slate-950";
             return;
         }
         btn.className =
@@ -520,7 +520,7 @@ function paintReport(dom: VlmDom) {
         chip.type = "button";
         chip.dataset.findingId = finding.id;
         chip.className =
-            "finding-chip px-2 py-1 rounded-full text-xs border border-slate-600 text-slate-200 hover:border-cyan-400";
+            "finding-chip px-2 py-1 rounded-full text-xs border border-slate-600 text-slate-200 hover:border-emerald-400";
         chip.textContent = `[${finding.label}]`;
 
         chip.addEventListener("mouseenter", () => {
@@ -546,7 +546,7 @@ function appendSection(
 ) {
     const titleEl = document.createElement("h3");
     titleEl.className =
-        "text-xs uppercase tracking-wider text-cyan-300 font-bold mb-3";
+        "text-xs uppercase tracking-wider text-emerald-300 font-bold mb-3";
     titleEl.textContent = title;
 
     const list = document.createElement("div");
@@ -570,8 +570,8 @@ function syncHighlightState(dom: VlmDom) {
     chips.forEach((chip) => {
         const isActive = chip.dataset.findingId === state.highlightedFindingId;
         chip.className = isActive
-            ? "finding-chip px-2 py-1 rounded-full text-xs border border-cyan-300 text-cyan-200 bg-cyan-500/10"
-            : "finding-chip px-2 py-1 rounded-full text-xs border border-slate-600 text-slate-200 hover:border-cyan-400";
+            ? "finding-chip px-2 py-1 rounded-full text-xs border border-emerald-300 text-emerald-200 bg-emerald-500/10"
+            : "finding-chip px-2 py-1 rounded-full text-xs border border-slate-600 text-slate-200 hover:border-emerald-400";
     });
 
     drawCanvas(dom);
@@ -595,14 +595,14 @@ function drawCanvas(dom: VlmDom) {
         const active = finding.id === state.highlightedFindingId;
 
         context.strokeStyle = active
-            ? "rgba(239, 68, 68, 1)"
-            : "rgba(220, 38, 38, 0.9)";
+            ? "rgba(16, 185, 129, 1)"
+            : "rgba(5, 150, 105, 0.9)";
         context.lineWidth = active ? 4 : 2;
         context.strokeRect(x1, y1, Math.max(2, x2 - x1), Math.max(2, y2 - y1));
 
         context.fillStyle = active
-            ? "rgba(190, 18, 60, 0.95)"
-            : "rgba(185, 28, 28, 0.9)";
+            ? "rgba(6, 95, 70, 0.95)"
+            : "rgba(4, 120, 87, 0.9)";
         context.font = "600 14px ui-sans-serif";
         const text = finding.label;
         const textWidth = context.measureText(text).width;
@@ -652,8 +652,8 @@ function renderOverlayBoxes(dom: VlmDom) {
         const box = document.createElement("div");
         const active = finding.id === state.highlightedFindingId;
         box.className = active
-            ? "absolute pointer-events-auto border-2 border-red-400 bg-red-500/10 shadow-[0_0_0_2px_rgba(248,113,113,0.35)]"
-            : "absolute pointer-events-auto border-2 border-red-600/95 bg-red-600/10";
+            ? "absolute pointer-events-auto border-2 border-emerald-400 bg-emerald-500/10 shadow-[0_0_0_2px_rgba(16,185,129,0.35)]"
+            : "absolute pointer-events-auto border-2 border-emerald-600/95 bg-emerald-600/10";
 
         box.style.left = `${left}%`;
         box.style.top = `${top}%`;
@@ -662,7 +662,7 @@ function renderOverlayBoxes(dom: VlmDom) {
 
         const label = document.createElement("div");
         label.className =
-            "absolute -top-6 left-0 bg-red-700/95 text-red-50 text-[10px] font-bold px-1.5 py-0.5 rounded whitespace-nowrap";
+            "absolute -top-6 left-0 bg-emerald-700/95 text-emerald-50 text-[10px] font-bold px-1.5 py-0.5 rounded whitespace-nowrap";
         label.textContent = finding.label;
         box.appendChild(label);
 

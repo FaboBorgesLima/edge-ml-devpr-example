@@ -13,13 +13,13 @@ export async function render(app: HTMLElement) {
     document.title = "Local Sentiment Analysis";
 
     app.innerHTML = `
-        <div class="min-h-screen bg-slate-950 text-slate-100 p-6 selection:bg-indigo-500 selection:text-white">
+        <div class="min-h-screen bg-slate-950 text-slate-100 p-6 selection:bg-emerald-500 selection:text-white">
             <div class="mx-auto w-full max-w-5xl space-y-5">
                 <header class="rounded-2xl border border-slate-800 bg-[radial-gradient(circle_at_top_right,_rgba(99,102,241,0.14),_transparent_45%),radial-gradient(circle_at_bottom_left,_rgba(56,189,248,0.1),_transparent_45%),rgba(15,23,42,0.85)] p-5 md:p-6">
                     <div class="flex items-center justify-between gap-4">
                         <div>
                             <div class="flex items-center gap-2">
-                                <span class="rounded-full border border-indigo-300/50 bg-indigo-300/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-200">Edge Eval</span>
+                                <span class="rounded-full border border-emerald-300/50 bg-emerald-300/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-200">Edge Eval</span>
                                 <a href="${import.meta.env.BASE_URL}" class="text-xs text-slate-400 underline decoration-slate-600 hover:text-slate-200">back to catalog</a>
                             </div>
                             <h1 class="mt-2 text-2xl font-black tracking-tight text-white md:text-3xl">Local Sentiment Analysis</h1>
@@ -33,10 +33,10 @@ export async function render(app: HTMLElement) {
                 <div class="bg-slate-950/80 px-6 py-3.5 border-b border-slate-800/80 flex justify-between items-center">
                     <div class="flex items-center gap-3">
                         <span class="relative flex h-3 w-3">
-                            <span id="status-ping" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                            <span id="status-dot" class="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
+                            <span id="status-ping" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span id="status-dot" class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
                         </span>
-                        <span id="status-text" class="text-xs font-bold tracking-wider text-amber-400 uppercase">
+                        <span id="status-text" class="text-xs font-bold tracking-wider text-emerald-400 uppercase">
                             Allocating tensors in memory...
                         </span>
                     </div>
@@ -58,14 +58,14 @@ export async function render(app: HTMLElement) {
                             rows="2"
                             disabled
                             placeholder="Waiting for the model to load..."
-                            class="w-full bg-slate-950/90 border border-slate-700/80 rounded-xl p-4 text-2xl font-medium text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all resize-none disabled:opacity-40 disabled:cursor-not-allowed"
+                            class="w-full bg-slate-950/90 border border-slate-700/80 rounded-xl p-4 text-2xl font-medium text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all resize-none disabled:opacity-40 disabled:cursor-not-allowed"
                         ></textarea>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-4 pt-2">
                         
                         <div class="md:col-span-7 bg-slate-950/60 border border-slate-800 rounded-xl p-6 flex flex-col items-center justify-center min-h-35 relative overflow-hidden group">
-                            <div class="absolute inset-0 bg-linear-to-br from-indigo-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            <div class="absolute inset-0 bg-linear-to-br from-emerald-500/5 to-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                             
                             <span id="sentiment-emoji" class="text-6xl mb-2 select-none transform transition-transform duration-150 group-hover:scale-110">🤖</span>
                             <div id="evaluation-result" class="text-lg font-bold tracking-tight text-slate-300 text-center">
@@ -82,14 +82,14 @@ export async function render(app: HTMLElement) {
                             <div class="space-y-3 my-auto py-2 text-xs">
                                 <div class="flex justify-between items-center">
                                     <span class="text-slate-400">Download/RAM:</span>
-                                    <span id="download-timer" class="font-bold text-amber-400 bg-amber-950/50 border border-amber-800/60 px-2 py-0.5 rounded">
+                                    <span id="download-timer" class="font-bold text-emerald-400 bg-emerald-950/50 border border-emerald-800/60 px-2 py-0.5 rounded">
                                         -- ms
                                     </span>
                                 </div>
                                 
                                 <div class="flex justify-between items-center">
                                     <span class="text-slate-400">Response Time:</span>
-                                    <span id="evaluation-timer" class="font-bold text-indigo-400 bg-indigo-950/50 border border-indigo-800/60 px-2 py-0.5 rounded">
+                                    <span id="evaluation-timer" class="font-bold text-emerald-400 bg-emerald-950/50 border border-emerald-800/60 px-2 py-0.5 rounded">
                                         -- ms
                                     </span>
                                 </div>

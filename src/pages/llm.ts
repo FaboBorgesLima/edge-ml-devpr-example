@@ -51,13 +51,13 @@ export async function render(app: HTMLElement) {
     document.title = "Local LLM Chat";
 
     app.innerHTML = `
-		<div class="min-h-screen bg-slate-950 text-slate-100 selection:bg-amber-300 selection:text-slate-950">
+		<div class="min-h-screen bg-slate-950 text-slate-100 selection:bg-emerald-300 selection:text-slate-950">
 			<div class="mx-auto max-w-5xl px-4 py-6 md:px-8 md:py-10">
 				<header class="mb-5 rounded-2xl border border-slate-800 bg-[radial-gradient(circle_at_top_right,_rgba(251,191,36,0.15),_transparent_45%),radial-gradient(circle_at_bottom_left,_rgba(56,189,248,0.12),_transparent_45%),rgba(15,23,42,0.85)] p-5 md:p-6">
 					<div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 						<div>
 							<div class="flex items-center gap-2">
-								<span class="rounded-full border border-amber-300/50 bg-amber-300/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-amber-200">Edge LLM</span>
+								<span class="rounded-full border border-emerald-300/50 bg-emerald-300/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-200">Edge LLM</span>
                                 <a href="${import.meta.env.BASE_URL}" class="text-xs text-slate-400 underline decoration-slate-600 hover:text-slate-200">back to catalog</a>
 							</div>
                             <h1 class="mt-2 text-2xl font-black tracking-tight text-white md:text-4xl">Local Multi-Model Chat</h1>
@@ -67,16 +67,16 @@ export async function render(app: HTMLElement) {
 						<div class="w-full max-w-xs rounded-xl border border-slate-700/70 bg-slate-900/70 p-3 text-xs font-mono">
 							<div class="mb-2 flex items-center justify-between">
 								<span class="text-slate-400">Runtime</span>
-                                <span id="hardware-badge" class="text-cyan-300">Detecting...</span>
+                                <span id="hardware-badge" class="text-emerald-300">Detecting...</span>
 							</div>
 							<div class="space-y-1.5">
 								<div class="flex items-center justify-between">
                                     <span class="text-slate-500">Model load</span>
-									<span id="download-timer" class="font-bold text-amber-300">-- ms</span>
+									<span id="download-timer" class="font-bold text-emerald-300">-- ms</span>
 								</div>
 								<div class="flex items-center justify-between">
                                     <span class="text-slate-500">Inference</span>
-									<span id="inference-timer" class="font-bold text-cyan-300">-- ms</span>
+									<span id="inference-timer" class="font-bold text-emerald-300">-- ms</span>
 								</div>
 							</div>
 						</div>
@@ -86,10 +86,10 @@ export async function render(app: HTMLElement) {
 				<section class="mb-5 rounded-xl border border-slate-800 bg-slate-900/80 px-4 py-3">
 					<div class="flex items-center gap-3">
 						<span class="relative flex h-3 w-3">
-							<span id="status-ping" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-							<span id="status-dot" class="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
+							<span id="status-ping" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+							<span id="status-dot" class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
 						</span>
-                        <span id="status-text" class="text-xs font-bold tracking-wider text-amber-300 uppercase">Loading model weights into local memory...</span>
+                        <span id="status-text" class="text-xs font-bold tracking-wider text-emerald-300 uppercase">Loading model weights into local memory...</span>
 					</div>
 				</section>
 
@@ -103,7 +103,7 @@ export async function render(app: HTMLElement) {
 								rows="3"
 								disabled
                                 placeholder="Waiting for the model to be ready..."
-								class="w-full resize-none rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-amber-300 disabled:opacity-50 disabled:cursor-not-allowed"
+								class="w-full resize-none rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-emerald-300 disabled:opacity-50 disabled:cursor-not-allowed"
 							></textarea>
 
 							<div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -113,14 +113,14 @@ export async function render(app: HTMLElement) {
 								</div>
 								<div class="flex items-center gap-2">
                                     <button id="clear-btn" class="rounded-lg border border-slate-700 px-3 py-2 text-xs font-bold uppercase tracking-wider text-slate-300 hover:border-slate-500">Clear chat</button>
-                                    <button id="send-btn" disabled class="rounded-lg bg-amber-300 px-4 py-2 text-xs font-black uppercase tracking-wider text-slate-950 disabled:opacity-45 disabled:cursor-not-allowed">Send</button>
+                                    <button id="send-btn" disabled class="rounded-lg bg-emerald-300 px-4 py-2 text-xs font-black uppercase tracking-wider text-slate-950 disabled:opacity-45 disabled:cursor-not-allowed">Send</button>
 								</div>
-                                    <select id="available-models" class="rounded-md border border-slate-700 bg-slate-950 px-2 py-1 text-slate-200">
-                                        ${AVAILABLE_MODELS.map(
-                                            (model) =>
-                                                `<option value="${model.key}">${model.name}</option>`,
-                                        ).join("")}
-                                    </select>
+                                <select id="available-models" class="rounded-md border border-slate-700 bg-slate-950 px-2 py-1 text-slate-200">
+                                    ${AVAILABLE_MODELS.map(
+                                        (model) =>
+                                            `<option value="${model.key}">${model.name}</option>`,
+                                    ).join("")}
+                                </select>
 							</div>
 						</div>
 					</section>
@@ -128,9 +128,9 @@ export async function render(app: HTMLElement) {
                     <aside class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
                         <h2 class="text-sm font-black uppercase tracking-wider text-white">Quick prompts (EdgeAI + dev)</h2>
 						<div class="mt-3 space-y-2">
-                            <button data-prompt="Task: Explain edge AI for a web app team. Output format: exactly 3 bullets, each under 12 words." class="quick-prompt w-full rounded-lg border border-slate-700 px-3 py-2 text-left text-xs text-slate-300 hover:border-cyan-400/70">Edge AI summary</button>
-                            <button data-prompt="Task: Create one Conventional Commit. Context: fixed token validation bug in auth middleware. Output format: one line only." class="quick-prompt w-full rounded-lg border border-slate-700 px-3 py-2 text-left text-xs text-slate-300 hover:border-cyan-400/70">Conventional Commit</button>
-                            <button data-prompt="Task: Convert this work into a checklist. Input: add login API, validate token, add tests, update docs. Output format: markdown checklist with 4 items." class="quick-prompt w-full rounded-lg border border-slate-700 px-3 py-2 text-left text-xs text-slate-300 hover:border-cyan-400/70">Task to checklist</button>
+                            <button data-prompt="What is your purpose?" class="quick-prompt w-full rounded-lg border border-slate-700 px-3 py-2 text-left text-xs text-slate-300 hover:border-emerald-400/70">What is your purpose?</button>
+                            <button data-prompt="What are the main limitations of running inference of Large Language Models (LLMs) on Web Browsers (Edge AI)? Be concise." class="quick-prompt w-full rounded-lg border border-slate-700 px-3 py-2 text-left text-xs text-slate-300 hover:border-emerald-400/70">What are the limitations with using LLMs on web browsers?</button>
+                            <button data-prompt="Convert this work into a checklist. Input: add login API, validate token, add tests, update docs. Output format: markdown checklist with 4 items." class="quick-prompt w-full rounded-lg border border-slate-700 px-3 py-2 text-left text-xs text-slate-300 hover:border-emerald-400/70">Task to checklist</button>
 						</div>
                         <p class="mt-4 text-[11px] text-slate-500">Responses may be slower in WASM mode.</p>
 					</aside>
@@ -148,7 +148,7 @@ export async function render(app: HTMLElement) {
                                 `<option value="${model.key}">${model.name}</option>`,
                         ).join("")}
                     </select>
-                    <button id="start-model-btn" class="mt-4 w-full rounded-lg bg-amber-300 px-4 py-2 text-xs font-black uppercase tracking-wider text-slate-950">Start download</button>
+                    <button id="start-model-btn" class="mt-4 w-full rounded-lg bg-emerald-300 px-4 py-2 text-xs font-black uppercase tracking-wider text-slate-950">Start download</button>
                 </div>
             </div>
 		</div>
@@ -288,7 +288,7 @@ async function loadModel(dom: LlmDom, model: AvailableModel) {
 
     try {
         const [generator, loadMs] = await Timer.wrap(() =>
-            getGenerator(state.useGpu, model),
+            getGenerator(model),
         )();
         ticker.stop(loadMs);
 
@@ -372,18 +372,18 @@ function setReadyStatus(dom: LlmDom, usingGpu: boolean, modelName: string) {
 function setLoadingStatus(dom: LlmDom, message: string) {
     dom.statusText.innerText = message;
     dom.statusText.className =
-        "text-xs font-bold tracking-wider text-amber-300 uppercase";
+        "text-xs font-bold tracking-wider text-emerald-300 uppercase";
     dom.statusDot.className =
-        "relative inline-flex rounded-full h-3 w-3 bg-amber-500";
+        "relative inline-flex rounded-full h-3 w-3 bg-emerald-500";
     dom.statusPing.classList.remove("hidden");
 }
 
 function setErrorStatus(dom: LlmDom, message: string) {
     dom.statusText.innerText = `Model load failed: ${message}`;
     dom.statusText.className =
-        "text-xs font-bold tracking-wider text-rose-300 uppercase";
+        "text-xs font-bold tracking-wider text-emerald-300 uppercase";
     dom.statusDot.className =
-        "relative inline-flex rounded-full h-3 w-3 bg-rose-500";
+        "relative inline-flex rounded-full h-3 w-3 bg-emerald-500";
     dom.statusPing.classList.add("hidden");
 }
 
@@ -425,7 +425,7 @@ function appendBubble(
     const bubble = document.createElement("div");
     bubble.className =
         role === "user"
-            ? "max-w-[88%] rounded-2xl rounded-br-md bg-amber-300 px-3 py-2 text-sm text-slate-950"
+            ? "max-w-[88%] rounded-2xl rounded-br-md bg-emerald-300 px-3 py-2 text-sm text-slate-950"
             : "max-w-[88%] rounded-2xl rounded-bl-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100";
     if (role === "assistant" && useMarkdown) {
         bubble.className = `${bubble.className} chat-markdown`;
