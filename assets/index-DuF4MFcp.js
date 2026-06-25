@@ -256,7 +256,7 @@ Please report this to https://github.com/markedjs/marked.`,e){let e=`<p>An error
 							<div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
 								<div class="flex items-center gap-2 text-xs text-slate-400">
 									<label for="token-input" class="font-mono">max_new_tokens</label>
-                                    <input id="token-input" type="number" min="32" max="512" value="256" class="w-24 rounded-md border border-slate-700 bg-slate-950 px-2 py-1 text-slate-200" />
+                                    <input id="token-input" type="number" min="32" max="512" value="512" class="w-24 rounded-md border border-slate-700 bg-slate-950 px-2 py-1 text-slate-200" />
 								</div>
 								<div class="flex items-center gap-2">
                                     <button id="clear-btn" class="rounded-lg border border-slate-700 px-3 py-2 text-xs font-bold uppercase tracking-wider text-slate-300 hover:border-slate-500">Clear chat</button>
