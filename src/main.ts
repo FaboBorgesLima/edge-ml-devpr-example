@@ -4,6 +4,7 @@ import { render as renderLlm } from "./pages/llm";
 import { render as renderRag } from "./pages/rag";
 import { render as renderSemantic } from "./pages/semantic";
 import { render as renderVlm } from "./pages/vlm";
+import { render as renderYolo } from "./pages/yolo";
 import { render } from "./pages/index";
 
 document.addEventListener("DOMContentLoaded", main);
@@ -27,6 +28,9 @@ async function main() {
     }
     if (window.location.pathname === `${viteBase}rag`) {
         return renderRag(app!);
+    }
+    if (window.location.pathname === `${viteBase}yolo`) {
+        return renderYolo(app!);
     }
     return render(app!);
 }

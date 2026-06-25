@@ -13,7 +13,7 @@ export async function render(app: HTMLElement) {
                     </div>
                     <div class="rounded-2xl border border-slate-700/70 bg-slate-900/70 p-4 font-mono text-xs text-slate-300">
                         <div class="flex items-center justify-between gap-4"><span>Demo status</span><span class="text-emerald-300">ONLINE</span></div>
-                        <div class="mt-2 text-[11px] text-slate-400">5 demos ready · 1 in development</div>
+                        <div class="mt-2 text-[11px] text-slate-400">6 demos ready · 0 in development</div>
                     </div>
                 </div>
             </header>
@@ -64,14 +64,14 @@ export async function render(app: HTMLElement) {
                     <p class="mt-3 text-sm text-slate-300">Local semantic retrieval plus grounded generation in one flow.</p>
                 </a>
 
-                <article class="rounded-2xl border border-slate-700 bg-slate-900/60 p-5 opacity-85">
+                <a href="./yolo" class="group rounded-2xl border border-emerald-600/40 bg-emerald-950/20 p-5 transition hover:-translate-y-1 hover:border-emerald-400">
                     <div class="mb-4 flex items-center justify-between">
-                        <span class="text-xs font-bold uppercase tracking-[0.16em] text-slate-300">Coming soon</span>
-                        <span class="rounded-full bg-slate-700/60 px-2 py-0.5 text-[10px] font-mono text-slate-300">YOLOv8</span>
+                        <span class="text-xs font-bold uppercase tracking-[0.16em] text-emerald-300">Available</span>
+                        <span class="rounded-full bg-emerald-400/20 px-2 py-0.5 text-[10px] font-mono text-emerald-200">YOLOv8n</span>
                     </div>
                     <h2 class="text-xl font-extrabold text-slate-100">Object Detection</h2>
-                    <p class="mt-3 text-sm text-slate-400">Video/image detection for visual inspection and alerts on edge devices.</p>
-                </article>
+                    <p class="mt-3 text-sm text-slate-300">Local object detection with YOLOv8 Nano, bounding boxes, confidence, and latency telemetry.</p>
+                </a>
             </section>
         </div>
     </div>

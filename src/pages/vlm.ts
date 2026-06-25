@@ -26,6 +26,11 @@ interface VlmDom {
     fileInput: HTMLInputElement;
     dropArea: HTMLLabelElement;
     uploadPrompt: HTMLDivElement;
+    cameraVideo: HTMLVideoElement;
+    cameraStartBtn: HTMLButtonElement;
+    cameraCaptureBtn: HTMLButtonElement;
+    cameraStopBtn: HTMLButtonElement;
+    cameraStatus: HTMLSpanElement;
     imageCanvas: HTMLCanvasElement;
     overlayLayer: HTMLDivElement;
     scanStage: HTMLSpanElement;
@@ -106,9 +111,17 @@ export async function render(app: HTMLElement) {
                                 <div class="font-bold text-emerald-300 text-sm">Drop an image to start Master Scan</div>
                                 <p class="text-slate-500 text-xs">After the base scan, all panels respond instantly.</p>
                             </div>
+                            <video id="camera-video" autoplay playsinline muted class="hidden w-full h-auto rounded-xl border border-slate-700/60 bg-slate-950"></video>
                             <canvas id="image-canvas" class="hidden w-full h-auto rounded-xl border border-slate-700/60 bg-slate-950"></canvas>
                             <div id="overlay-layer" class="hidden absolute left-4 right-4 pointer-events-none"></div>
                         </label>
+
+                        <div class="flex flex-wrap items-center gap-2">
+                            <button id="camera-start-btn" type="button" class="rounded-lg border border-emerald-600/60 px-3 py-2 text-xs font-bold uppercase tracking-wider text-emerald-200 hover:border-emerald-400">Start camera</button>
+                            <button id="camera-capture-btn" type="button" disabled class="rounded-lg bg-emerald-500 px-3 py-2 text-xs font-bold uppercase tracking-wider text-slate-950 disabled:cursor-not-allowed disabled:opacity-45">Capture & scan</button>
+                            <button id="camera-stop-btn" type="button" disabled class="rounded-lg border border-slate-700 px-3 py-2 text-xs font-bold uppercase tracking-wider text-slate-300 disabled:cursor-not-allowed disabled:opacity-45">Stop camera</button>
+                            <span id="camera-status" class="text-[11px] text-slate-500">Camera idle</span>
+                        </div>
 
                         <form id="free-query-form" class="space-y-2">
                             <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400">Open Inspection / Open Vocabulary</label>
@@ -186,6 +199,7 @@ async function boot() {
         wireUpload(dom);
         wirePanels(dom);
         wireFreeInspection(dom);
+        wireCamera(dom);
     } catch (error) {
         downloadTicker.stop();
         updateReport(
@@ -203,6 +217,17 @@ function getDomRefs(): VlmDom {
         uploadPrompt: document.getElementById(
             "upload-prompt",
         ) as HTMLDivElement,
+        cameraVideo: document.getElementById("camera-video") as HTMLVideoElement,
+        cameraStartBtn: document.getElementById(
+            "camera-start-btn",
+        ) as HTMLButtonElement,
+        cameraCaptureBtn: document.getElementById(
+            "camera-capture-btn",
+        ) as HTMLButtonElement,
+        cameraStopBtn: document.getElementById(
+            "camera-stop-btn",
+        ) as HTMLButtonElement,
+        cameraStatus: document.getElementById("camera-status") as HTMLSpanElement,
         imageCanvas: document.getElementById(
             "image-canvas",
         ) as HTMLCanvasElement,
@@ -297,6 +322,92 @@ function wireUpload(dom: VlmDom) {
     });
 }
 
+function wireCamera(dom: VlmDom) {
+    if (!navigator.mediaDevices?.getUserMedia) {
+        dom.cameraStartBtn.disabled = true;
+        dom.cameraStatus.innerText = "Camera API unavailable";
+        return;
+    }
+
+    let cameraStream: MediaStream | null = null;
+
+    const stopCamera = () => {
+        stopMediaStream(cameraStream);
+        cameraStream = null;
+
+        dom.cameraVideo.pause();
+        dom.cameraVideo.srcObject = null;
+        dom.cameraVideo.classList.add("hidden");
+
+        dom.cameraCaptureBtn.disabled = true;
+        dom.cameraStopBtn.disabled = true;
+        dom.cameraStartBtn.disabled = false;
+        dom.cameraStatus.innerText = "Camera stopped";
+    };
+
+    dom.cameraStartBtn.addEventListener("click", async () => {
+        if (cameraStream) return;
+
+        dom.cameraStatus.innerText = "Starting camera...";
+        try {
+            let stream: MediaStream;
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: "environment" },
+                    audio: false,
+                });
+            } catch {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
+                    audio: false,
+                });
+            }
+
+            cameraStream = stream;
+            dom.cameraVideo.srcObject = stream;
+            await dom.cameraVideo.play();
+
+            dom.uploadPrompt.classList.add("hidden");
+            dom.imageCanvas.classList.add("hidden");
+            dom.cameraVideo.classList.remove("hidden");
+
+            dom.cameraCaptureBtn.disabled = false;
+            dom.cameraStopBtn.disabled = false;
+            dom.cameraStartBtn.disabled = true;
+            dom.cameraStatus.innerText = "Camera active";
+        } catch (error) {
+            dom.cameraStatus.innerText = `Camera error: ${toErrorMessage(error)}`;
+        }
+    });
+
+    dom.cameraCaptureBtn.addEventListener("click", async () => {
+        if (!cameraStream) return;
+
+        dom.cameraCaptureBtn.disabled = true;
+        dom.cameraStatus.innerText = "Capturing frame...";
+        try {
+            const frameFile = await captureVideoFrameToFile(
+                dom.cameraVideo,
+                "vlm-camera",
+            );
+            await executeMasterScan(dom, frameFile);
+            dom.cameraStatus.innerText = "Frame captured and scanned";
+        } catch (error) {
+            dom.cameraStatus.innerText = `Capture failed: ${toErrorMessage(error)}`;
+        } finally {
+            dom.cameraCaptureBtn.disabled = false;
+        }
+    });
+
+    dom.cameraStopBtn.addEventListener("click", () => {
+        stopCamera();
+    });
+
+    window.addEventListener("beforeunload", () => {
+        stopMediaStream(cameraStream);
+    });
+}
+
 function wirePanels(dom: VlmDom) {
     const panels: Array<Exclude<ScanPanel, "free-inspection">> = [
         "description",
@@ -387,6 +498,7 @@ async function executeMasterScan(dom: VlmDom, file: File) {
     const bitmapPromise = createImageBitmap(file);
 
     dom.uploadPrompt.classList.add("hidden");
+    dom.cameraVideo.classList.add("hidden");
     dom.imageCanvas.classList.remove("hidden");
 
     updateReport(dom, "Running Master Scan. Please wait for the base pass...");
@@ -734,4 +846,47 @@ function updateReport(dom: VlmDom, text: string) {
 function toErrorMessage(error: unknown): string {
     if (error instanceof Error) return error.message;
     return String(error);
+}
+
+async function captureVideoFrameToFile(
+    video: HTMLVideoElement,
+    baseName: string,
+): Promise<File> {
+    if (!video.videoWidth || !video.videoHeight) {
+        throw new Error("Camera has no frame available yet.");
+    }
+
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const context = canvas.getContext("2d");
+    if (!context) {
+        throw new Error("Could not prepare frame capture context.");
+    }
+
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const blob = await new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob(
+            (value) => {
+                if (!value) {
+                    reject(new Error("Could not encode captured frame."));
+                    return;
+                }
+                resolve(value);
+            },
+            "image/png",
+            0.95,
+        );
+    });
+
+    return new File([blob], `${baseName}-${Date.now()}.png`, {
+        type: "image/png",
+    });
+}
+
+function stopMediaStream(stream: MediaStream | null) {
+    if (!stream) return;
+    stream.getTracks().forEach((track) => track.stop());
 }
