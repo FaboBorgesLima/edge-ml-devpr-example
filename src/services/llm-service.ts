@@ -2,17 +2,45 @@ import {
     pipeline,
     TextGenerationPipeline,
     type Message,
+    type PretrainedModelOptions,
 } from "@huggingface/transformers";
 
-export async function getGenerator(useGpu: boolean) {
-    return await pipeline(
-        "text-generation",
-        "onnx-community/gemma-3-270m-it-ONNX",
-        {
-            device: useGpu ? "webgpu" : "wasm",
-            dtype: useGpu ? "q4f16" : "fp16",
-        },
-    );
+export interface AvailableModel {
+    key: string;
+    name: string;
+    webgpuDType: PretrainedModelOptions["dtype"];
+    wasmDType: PretrainedModelOptions["dtype"];
+}
+
+export const AVAILABLE_MODELS: readonly AvailableModel[] = [
+    {
+        key: "HuggingFaceTB/SmolLM2-360M-Instruct",
+        name: "SmolLM2 360M (Recommended)",
+        webgpuDType: "q4f16",
+        wasmDType: "int8",
+    },
+    {
+        key: "HuggingFaceTB/SmolLM2-135M-Instruct",
+        name: "SmolLM2 135M (Light)",
+        webgpuDType: "q4f16",
+        wasmDType: "int8",
+    },
+    {
+        key: "onnx-community/gemma-3-270m-it-ONNX",
+        name: "Gemma 3 270M (Heavy)",
+        webgpuDType: "q4f16",
+        wasmDType: "fp16",
+    },
+];
+
+export async function getGenerator(
+    useGpu: boolean,
+    availableModel: AvailableModel,
+) {
+    return await pipeline("text-generation", availableModel.key, {
+        device: useGpu ? "webgpu" : "wasm",
+        dtype: useGpu ? availableModel.webgpuDType : availableModel.wasmDType,
+    });
 }
 
 export class Chat {
@@ -22,7 +50,7 @@ export class Chat {
 
     constructor(
         generator: TextGenerationPipeline,
-        systemMessage: string = "Você é um assistente de IA útil, prestativo e amigável.",
+        systemMessage: string = "You are an EdgeAI assistant for developers. Focus on local inference, WebGPU/WASM, latency, privacy, and practical coding tasks. Reply in simple English. Keep output short and structured for a small model. If a table is requested, output strict markdown table syntax with: 1 header row, 1 separator row using --- , and up to 4 data rows.",
     ) {
         this.generator = generator;
         this.systemMessage = systemMessage;
@@ -36,11 +64,11 @@ export class Chat {
         this.messages.push({ role: "user", content: message });
         const generationOptions = {
             max_new_tokens: maxNewTokens,
-            do_sample: false,
-            temperature: 0.2,
+            do_sample: true,
+            temperature: 0.15,
             top_p: 0.85,
-            repetition_penalty: 1.2,
-            no_repeat_ngram_size: 4,
+            repetition_penalty: 1.15,
+            no_repeat_ngram_size: 3,
         };
 
         const chatMessages = this.buildApiMessages();

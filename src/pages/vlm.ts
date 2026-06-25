@@ -56,7 +56,7 @@ const state: VlmState = {
 
 export async function render(app: HTMLElement) {
     document.title =
-        "Microsoft Florence-2 - Master Scan e Inspecao Livre no Cliente";
+        "Microsoft Florence-2 - Master Scan and Open Inspection in Browser";
 
     app.innerHTML = `
         <div class="min-h-screen bg-slate-950 text-slate-100 p-4 md:p-8 selection:bg-cyan-400 selection:text-slate-950">
@@ -65,33 +65,36 @@ export async function render(app: HTMLElement) {
                     <div>
                         <div class="flex items-center gap-2">
                             <span class="px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.2em] bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 rounded">Edge VLM</span>
+                            <a href="${import.meta.env.BASE_URL}" class="text-xs text-slate-400 underline decoration-slate-600 hover:text-slate-200">back to catalog</a>
+                        </div>
+                        <div class="mt-2 flex items-center gap-2">
                             <h1 class="text-2xl md:text-3xl font-black text-white tracking-tight">Florence-2 Master Scan</h1>
                         </div>
-                        <p class="text-slate-400 text-sm mt-1">Processamento pesado uma vez, paineis instantaneos e grounding bidirecional.</p>
+                        <p class="text-slate-400 text-sm mt-1">One heavy pass per image, instant panels, and bidirectional grounding.</p>
                     </div>
                     <div class="grid grid-cols-2 gap-3 text-xs font-mono bg-slate-900/70 p-3 rounded-xl border border-slate-800 min-w-[280px]">
                         <div>
-                            <div class="text-slate-500 uppercase text-[10px] tracking-wider">Alocacao IA</div>
-                            <div id="download-timer" class="text-amber-400 font-bold text-base">Tempo: --ms</div>
+                            <div class="text-slate-500 uppercase text-[10px] tracking-wider">Model Load</div>
+                            <div id="download-timer" class="text-amber-400 font-bold text-base">Time: --ms</div>
                         </div>
                         <div>
                             <div class="text-slate-500 uppercase text-[10px] tracking-wider">Master Scan</div>
-                            <div id="evaluation-timer" class="text-cyan-300 font-bold text-base">Tempo: --ms</div>
+                            <div id="evaluation-timer" class="text-cyan-300 font-bold text-base">Time: --ms</div>
                         </div>
                     </div>
                 </header>
 
                 <section class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4 md:p-5 space-y-3">
                     <div class="flex items-center justify-between gap-3 flex-wrap">
-                        <span id="scan-stage" class="text-xs md:text-sm font-bold tracking-wide text-cyan-300 uppercase">Inicializando modelo...</span>
+                        <span id="scan-stage" class="text-xs md:text-sm font-bold tracking-wide text-cyan-300 uppercase">Initializing model...</span>
                         <span class="text-[10px] font-mono px-2 py-1 rounded border border-emerald-900/50 bg-emerald-950/40 text-emerald-300">
-                            <span id="hardware-badge">Detectando hardware...</span>
+                            <span id="hardware-badge">Detecting hardware...</span>
                         </span>
                     </div>
                     <div class="h-2 rounded-full bg-slate-800 overflow-hidden">
                         <div id="scan-progress-bar" class="h-full w-0 bg-linear-to-r from-cyan-400 to-indigo-400 transition-all duration-200"></div>
                     </div>
-                    <div class="text-[11px] text-slate-500">PT: o custo pesado roda uma vez por imagem. EN: the expensive tensor pass runs once per image.</div>
+                    <div class="text-[11px] text-slate-500">The expensive tensor pass runs once per image.</div>
                 </section>
 
                 <section class="grid grid-cols-1 lg:grid-cols-2 gap-5">
@@ -100,31 +103,31 @@ export async function render(app: HTMLElement) {
                             <input id="file-input" type="file" accept="image/*" class="hidden" />
                             <div id="upload-prompt" class="text-center py-12 space-y-2">
                                 <div class="text-5xl">🛰️</div>
-                                <div class="font-bold text-cyan-300 text-sm">Solte uma imagem para iniciar o Master Scan</div>
-                                <p class="text-slate-500 text-xs">Depois do scan base, as abas respondem imediatamente.</p>
+                                <div class="font-bold text-cyan-300 text-sm">Drop an image to start Master Scan</div>
+                                <p class="text-slate-500 text-xs">After the base scan, all panels respond instantly.</p>
                             </div>
                             <canvas id="image-canvas" class="hidden w-full h-auto rounded-xl border border-slate-700/60 bg-slate-950"></canvas>
                             <div id="overlay-layer" class="hidden absolute left-4 right-4 pointer-events-none"></div>
                         </label>
 
                         <form id="free-query-form" class="space-y-2">
-                            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400">Inspecao Livre / Open Vocabulary</label>
+                            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400">Open Inspection / Open Vocabulary</label>
                             <div class="flex gap-2">
                                 <input
                                     id="free-query-input"
                                     type="text"
                                     class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-cyan-400"
-                                    placeholder="O que voce precisa inspecionar? Ex: parafusos enferrujados"
+                                    placeholder="What should be inspected? Example: rusty screws"
                                     disabled
                                 />
                                 <button type="submit" class="px-3 py-2 rounded-lg bg-cyan-500 text-slate-950 text-xs font-bold uppercase tracking-wide disabled:opacity-40" disabled id="free-query-submit">
-                                    Inspecionar
+                                    Inspect
                                 </button>
                             </div>
                             <div class="flex flex-wrap gap-2">
-                                <button type="button" data-alert="Pessoas sem capacete de seguranca" class="quick-alert px-2.5 py-1 rounded-full text-[11px] border border-slate-700 text-slate-300 hover:border-cyan-400/60">Inspecionar EPIs</button>
-                                <button type="button" data-alert="codigo de barras legivel" class="quick-alert px-2.5 py-1 rounded-full text-[11px] border border-slate-700 text-slate-300 hover:border-cyan-400/60">Codigo de barras</button>
-                                <button type="button" data-alert="janelas abertas" class="quick-alert px-2.5 py-1 rounded-full text-[11px] border border-slate-700 text-slate-300 hover:border-cyan-400/60">Janelas abertas</button>
+                                <button type="button" data-alert="people without safety helmets" class="quick-alert px-2.5 py-1 rounded-full text-[11px] border border-slate-700 text-slate-300 hover:border-cyan-400/60">Helmet check</button>
+                                <button type="button" data-alert="readable barcode" class="quick-alert px-2.5 py-1 rounded-full text-[11px] border border-slate-700 text-slate-300 hover:border-cyan-400/60">Barcode check</button>
+                                <button type="button" data-alert="open windows" class="quick-alert px-2.5 py-1 rounded-full text-[11px] border border-slate-700 text-slate-300 hover:border-cyan-400/60">Open windows</button>
                             </div>
                         </form>
                     </div>
@@ -132,14 +135,14 @@ export async function render(app: HTMLElement) {
                     <div class="rounded-2xl border border-slate-800 bg-slate-900/70 overflow-hidden flex flex-col min-h-[420px]">
                         <div class="p-3 border-b border-slate-800 bg-slate-950/60">
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                                <button id="panel-description" class="panel-btn px-2 py-2 rounded-lg text-[11px] font-bold bg-cyan-500 text-slate-950">Descricao Geral</button>
-                                <button id="panel-ocr" class="panel-btn px-2 py-2 rounded-lg text-[11px] font-bold text-slate-300 border border-slate-700">Ler Textos (OCR)</button>
-                                <button id="panel-detection" class="panel-btn px-2 py-2 rounded-lg text-[11px] font-bold text-slate-300 border border-slate-700">Deteccao Detalhada</button>
-                                <button id="panel-grid" class="panel-btn px-2 py-2 rounded-lg text-[11px] font-bold text-slate-300 border border-slate-700">Varredura em Grade</button>
+                                <button id="panel-description" class="panel-btn px-2 py-2 rounded-lg text-[11px] font-bold bg-cyan-500 text-slate-950">General Description</button>
+                                <button id="panel-ocr" class="panel-btn px-2 py-2 rounded-lg text-[11px] font-bold text-slate-300 border border-slate-700">Read Text (OCR)</button>
+                                <button id="panel-detection" class="panel-btn px-2 py-2 rounded-lg text-[11px] font-bold text-slate-300 border border-slate-700">Detailed Detection</button>
+                                <button id="panel-grid" class="panel-btn px-2 py-2 rounded-lg text-[11px] font-bold text-slate-300 border border-slate-700">Grid Scan</button>
                             </div>
                         </div>
                         <div id="report-container" class="p-4 md:p-5 text-sm text-slate-200 whitespace-pre-wrap overflow-y-auto flex-1">
-                            Aguardando modelo...
+                            Waiting for model...
                         </div>
                     </div>
                 </section>
@@ -156,14 +159,13 @@ async function boot() {
     state.activePanel = "description";
     state.highlightedFindingId = null;
 
-    // PT: Mostramos o backend para explicar diferenca de latencia para a plateia.
-    // EN: We expose the backend to explain latency differences to the audience.
+    // Show the backend in use to explain latency differences to the audience.
     dom.hardwareBadge.innerText = (await hasGPU())
-        ? "WebGPU ativo"
-        : "WASM ativo";
+        ? "WebGPU active"
+        : "WASM active";
 
     dom.fileInput.disabled = true;
-    setStage(dom, "Carregando Florence-2 na memoria local...", 0.06);
+    setStage(dom, "Loading Florence-2 into local memory...", 0.06);
 
     const downloadTicker = startLiveMs(dom.downloadTimer, 20);
 
@@ -173,16 +175,12 @@ async function boot() {
         state.model = model;
         downloadTicker.stop();
 
-        setStage(
-            dom,
-            "Modelo pronto. Faca upload para executar o Master Scan.",
-            0.12,
-        );
+        setStage(dom, "Model ready. Upload an image to run Master Scan.", 0.12);
 
         dom.fileInput.disabled = false;
         updateReport(
             dom,
-            "Aguardando imagem. O painel sera preenchido apos o scan base.",
+            "Waiting for an image. Panels will be filled after the base scan.",
         );
 
         wireUpload(dom);
@@ -192,9 +190,9 @@ async function boot() {
         downloadTicker.stop();
         updateReport(
             dom,
-            `Falha ao inicializar Florence-2:\n${toErrorMessage(error)}`,
+            `Failed to initialize Florence-2:\n${toErrorMessage(error)}`,
         );
-        setStage(dom, "Falha de inicializacao", 1);
+        setStage(dom, "Initialization failed", 1);
     }
 }
 
@@ -333,8 +331,8 @@ function wireFreeInspection(dom: VlmDom) {
         state.activePanel = "free-inspection";
         state.highlightedFindingId = null;
 
-        updateReport(dom, "Executando inspecao livre...");
-        setStage(dom, `Inspecao: ${query}`, 1);
+        updateReport(dom, "Running open inspection...");
+        setStage(dom, `Inspection: ${query}`, 1);
 
         const live = startLiveMs(dom.evaluationTimer, 20);
 
@@ -352,7 +350,7 @@ function wireFreeInspection(dom: VlmDom) {
             live.stop();
             updateReport(
                 dom,
-                `Erro na inspecao livre:\n${toErrorMessage(error)}`,
+                `Open inspection error:\n${toErrorMessage(error)}`,
             );
         } finally {
             freeSubmit.disabled = false;
@@ -391,8 +389,8 @@ async function executeMasterScan(dom: VlmDom, file: File) {
     dom.uploadPrompt.classList.add("hidden");
     dom.imageCanvas.classList.remove("hidden");
 
-    updateReport(dom, "Executando Master Scan. Aguarde o passe base...");
-    setStage(dom, "Master Scan em execucao", 0.16);
+    updateReport(dom, "Running Master Scan. Please wait for the base pass...");
+    setStage(dom, "Master Scan in progress", 0.16);
 
     dom.freeQueryInput.disabled = true;
     const freeSubmit = document.getElementById(
@@ -416,11 +414,7 @@ async function executeMasterScan(dom: VlmDom, file: File) {
         );
 
         live.stop();
-        setStage(
-            dom,
-            "Master Scan concluido. Paineis instantaneos liberados.",
-            1,
-        );
+        setStage(dom, "Master Scan complete. Instant panels unlocked.", 1);
 
         dom.freeQueryInput.disabled = false;
         freeSubmit.disabled = false;
@@ -430,8 +424,8 @@ async function executeMasterScan(dom: VlmDom, file: File) {
         drawCanvas(dom);
     } catch (error) {
         live.stop();
-        setStage(dom, "Falha durante o scan", 1);
-        updateReport(dom, `Erro no Master Scan:\n${toErrorMessage(error)}`);
+        setStage(dom, "Scan failed", 1);
+        updateReport(dom, `Master Scan error:\n${toErrorMessage(error)}`);
     }
 }
 
@@ -454,7 +448,7 @@ function paintPanelButtons(dom: VlmDom) {
 
 function paintReport(dom: VlmDom) {
     if (!state.masterScan && state.activePanel !== "free-inspection") {
-        updateReport(dom, "Aguardando Master Scan...");
+        updateReport(dom, "Waiting for Master Scan...");
         return;
     }
 
@@ -462,27 +456,27 @@ function paintReport(dom: VlmDom) {
 
     if (state.activePanel === "free-inspection") {
         if (!state.freeInspection) {
-            updateReport(dom, "Nenhum resultado de inspecao livre ainda.");
+            updateReport(dom, "No open-inspection result yet.");
             return;
         }
 
         appendSection(
             dom.reportContainer,
-            "Inspecao Livre",
+            "Open Inspection",
             state.freeInspection.lines,
         );
         return;
     }
 
     if (!state.masterScan) {
-        updateReport(dom, "Aguardando Master Scan...");
+        updateReport(dom, "Waiting for Master Scan...");
         return;
     }
 
     if (state.activePanel === "description") {
         appendSection(
             dom.reportContainer,
-            "Descricao Geral",
+            "General Description",
             state.masterScan.byTask["<DETAILED_CAPTION>"].lines,
         );
         return;
@@ -491,7 +485,7 @@ function paintReport(dom: VlmDom) {
     if (state.activePanel === "ocr") {
         appendSection(
             dom.reportContainer,
-            "Leitura de Texto (OCR)",
+            "Text Reading (OCR)",
             state.masterScan.byTask["<OCR>"].lines,
         );
         return;
@@ -500,7 +494,7 @@ function paintReport(dom: VlmDom) {
     if (state.activePanel === "grid") {
         appendSection(
             dom.reportContainer,
-            "Varredura em Grade",
+            "Grid Scan",
             state.masterScan.gridSummary,
         );
         return;
@@ -508,14 +502,14 @@ function paintReport(dom: VlmDom) {
 
     appendSection(
         dom.reportContainer,
-        "Deteccao Detalhada",
+        "Detailed Detection",
         state.masterScan.byTask["<OD>"].lines,
     );
 
     const hint = document.createElement("p");
     hint.className = "text-xs text-slate-400 mt-4";
     hint.textContent =
-        "Passe o mouse nas tags para acender as caixas na imagem, ou o contrario.";
+        "Hover chips to highlight boxes in the image, or hover boxes to highlight chips.";
     dom.reportContainer.appendChild(hint);
 
     const tagsWrap = document.createElement("div");

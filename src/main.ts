@@ -9,13 +9,15 @@ document.addEventListener("DOMContentLoaded", main);
 async function main() {
     const app = document.getElementById("app");
 
-    if (window.location.pathname === "/evaluation") {
+    const viteBase = import.meta.env.BASE_URL;
+
+    if (window.location.pathname === `${viteBase}evaluation`) {
         return renderEvaluation(app!);
     }
-    if (window.location.pathname === "/vlm") {
+    if (window.location.pathname === `${viteBase}vlm`) {
         return renderVlm(app!);
     }
-    if (window.location.pathname === "/llm") {
+    if (window.location.pathname === `${viteBase}llm`) {
         return renderLlm(app!);
     }
     return render(app!);

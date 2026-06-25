@@ -10,9 +10,24 @@ import { TextClassificationPipeline } from "@huggingface/transformers";
 import { hasGPU } from "../lib/has-gpu";
 
 export async function render(app: HTMLElement) {
+    document.title = "Local Sentiment Analysis";
+
     app.innerHTML = `
-        <div class="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-6 font-sans selection:bg-indigo-500 selection:text-white">
-            
+        <div class="min-h-screen bg-slate-950 text-slate-100 p-6 selection:bg-indigo-500 selection:text-white">
+            <div class="mx-auto w-full max-w-5xl space-y-5">
+                <header class="rounded-2xl border border-slate-800 bg-[radial-gradient(circle_at_top_right,_rgba(99,102,241,0.14),_transparent_45%),radial-gradient(circle_at_bottom_left,_rgba(56,189,248,0.1),_transparent_45%),rgba(15,23,42,0.85)] p-5 md:p-6">
+                    <div class="flex items-center justify-between gap-4">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="rounded-full border border-indigo-300/50 bg-indigo-300/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-200">Edge Eval</span>
+                                <a href="${import.meta.env.BASE_URL}" class="text-xs text-slate-400 underline decoration-slate-600 hover:text-slate-200">back to catalog</a>
+                            </div>
+                            <h1 class="mt-2 text-2xl font-black tracking-tight text-white md:text-3xl">Local Sentiment Analysis</h1>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="flex flex-col items-center">
             <div class="w-full max-w-3xl bg-slate-900/80 border border-slate-800 rounded-2xl shadow-2xl backdrop-blur-xl overflow-hidden">
                 
                 <div class="bg-slate-950/80 px-6 py-3.5 border-b border-slate-800/80 flex justify-between items-center">
@@ -22,7 +37,7 @@ export async function render(app: HTMLElement) {
                             <span id="status-dot" class="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
                         </span>
                         <span id="status-text" class="text-xs font-bold tracking-wider text-amber-400 uppercase">
-                            Alocando Tensores na Memória...
+                            Allocating tensors in memory...
                         </span>
                     </div>
                     
@@ -36,13 +51,13 @@ export async function render(app: HTMLElement) {
                     
                     <div>
                         <label for="evaluation-input" class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
-                            Entrada de Texto:
+                            Text Input:
                         </label>
                         <textarea 
                             id="evaluation-input"
                             rows="2"
                             disabled
-                            placeholder="Aguardando o modelo ser carregado..."
+                            placeholder="Waiting for the model to load..."
                             class="w-full bg-slate-950/90 border border-slate-700/80 rounded-xl p-4 text-2xl font-medium text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all resize-none disabled:opacity-40 disabled:cursor-not-allowed"
                         ></textarea>
                     </div>
@@ -54,7 +69,7 @@ export async function render(app: HTMLElement) {
                             
                             <span id="sentiment-emoji" class="text-6xl mb-2 select-none transform transition-transform duration-150 group-hover:scale-110">🤖</span>
                             <div id="evaluation-result" class="text-lg font-bold tracking-tight text-slate-300 text-center">
-                                Aguardando estímulo...
+                                Waiting for input...
                             </div>
                         </div>
 
@@ -73,7 +88,7 @@ export async function render(app: HTMLElement) {
                                 </div>
                                 
                                 <div class="flex justify-between items-center">
-                                    <span class="text-slate-400">Tempo de Resposta:</span>
+                                    <span class="text-slate-400">Response Time:</span>
                                     <span id="evaluation-timer" class="font-bold text-indigo-400 bg-indigo-950/50 border border-indigo-800/60 px-2 py-0.5 rounded">
                                         -- ms
                                     </span>
@@ -81,7 +96,7 @@ export async function render(app: HTMLElement) {
                             </div>
 
                             <div class="text-[10px] text-slate-500 text-right border-t border-slate-800 pt-2">
-                                0.0 bytes trafegados na rede
+                                0.0 bytes sent over network
                             </div>
                         </div>
 
@@ -94,6 +109,8 @@ export async function render(app: HTMLElement) {
             <p class="text-slate-600 text-xs mt-4 font-mono">
                 Powered by @huggingface/transformers (v3) & WebAssembly
             </p>
+                </div>
+            </div>
         </div>
     `;
 
@@ -127,8 +144,7 @@ async function boot() {
         "status-ping",
     ) as HTMLSpanElement;
 
-    // PT: Bloqueamos entrada durante a alocacao inicial do modelo.
-    // EN: Input stays locked while the model is being allocated.
+    // Keep input locked while the model is being allocated.
     textInput.disabled = true;
 
     const loadingTicker = startLiveMs(downloadTimerDiv, 20);
@@ -139,7 +155,7 @@ async function boot() {
 
     renderMs(downloadTimerDiv, downloadTime);
 
-    statusText.innerText = "Modelo 100% Carregado na RAM";
+    statusText.innerText = "Model fully loaded in RAM";
     statusText.className =
         "text-xs font-bold tracking-wider text-emerald-400 uppercase";
     statusDot.className =
@@ -148,7 +164,7 @@ async function boot() {
 
     textInput.disabled = false;
     textInput.placeholder =
-        "Ex: O Wi-Fi deste evento está surpreendentemente rápido...";
+        "Example: The Wi-Fi at this event is surprisingly fast...";
     textInput.focus();
 
     textInput.addEventListener("input", async (event) => {
@@ -158,7 +174,7 @@ async function boot() {
         const text = target.value;
 
         if (!text.trim()) {
-            evaluationResult.innerText = "Aguardando estímulo...";
+            evaluationResult.innerText = "Waiting for input...";
             document.getElementById("sentiment-emoji")!.innerText = "🤖";
             evaluationTimerDiv.innerText = "-- ms";
             return;
@@ -186,10 +202,9 @@ async function updateEvaluation(
     renderMs(timerDiv, responseTime);
 
     const scoreFormatado = (result.score * 100).toFixed(1);
-    evaluationResult.innerText = `${result.label} (${scoreFormatado} de certeza)`;
+    evaluationResult.innerText = `${result.label} (${scoreFormatado}% confidence)`;
 
-    // PT: Mapeamento simples de classes para visual de resposta em palco.
-    // EN: Simple class-to-emoji mapping for live stage feedback.
+    // Simple class-to-emoji mapping for live stage feedback.
     const emojiEl = document.getElementById(
         "sentiment-emoji",
     ) as HTMLSpanElement;
