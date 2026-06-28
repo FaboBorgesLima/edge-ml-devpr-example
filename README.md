@@ -1,6 +1,12 @@
 # DevPR Edge ML Demo
 
-Interactive browser demos for local AI inference with WebGPU and WASM.
+Interactive browser demos for local AI inference with WebGPU and WASM using open-source models and Transformers.js.
+
+https://faboborgeslima.github.io/edge-ml-devpr-example/
+
+# IMPORTANT
+
+The models are extremely large and heavy. This is only a proof-of-concept demo. For production consider using smaller models or server-side inference (or a mixture of both, like using LLMs as routers and RAGs with tons of retrieval data).
 
 ## Features
 
@@ -45,16 +51,6 @@ npm run preview
 ```bash
 npm run deploy
 ```
-
-## YOLO Page
-
-The YOLO demo is available at `/yolo` and uses:
-
-- Model: `onnx-community/yolov8n`
-- Task: object detection
-- Runtime: WebGPU when available, WASM fallback otherwise
-
-You can upload an image, set confidence threshold, and inspect detected objects with bounding boxes and confidence values.
 
 ## Notes
 

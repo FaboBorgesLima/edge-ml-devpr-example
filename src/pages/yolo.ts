@@ -13,7 +13,7 @@ interface YoloState {
     currentFile: File | null;
     imageBitmap: ImageBitmap | null;
     detections: YoloDetection[];
-  cameraStream: MediaStream | null;
+    cameraStream: MediaStream | null;
 }
 
 const state: YoloState = {
@@ -91,27 +91,51 @@ export async function render(app: HTMLElement) {
 }
 
 async function boot() {
-    const hardwareBadge = document.getElementById("hardware-badge") as HTMLSpanElement;
+    const hardwareBadge = document.getElementById(
+        "hardware-badge",
+    ) as HTMLSpanElement;
     const loadMs = document.getElementById("load-ms") as HTMLSpanElement;
     const detectMs = document.getElementById("detect-ms") as HTMLSpanElement;
     const fileInput = document.getElementById("file-input") as HTMLInputElement;
     const dropArea = document.getElementById("drop-area") as HTMLLabelElement;
-    const uploadPrompt = document.getElementById("upload-prompt") as HTMLDivElement;
-    const cameraVideo = document.getElementById("camera-video") as HTMLVideoElement;
-    const imageCanvas = document.getElementById("image-canvas") as HTMLCanvasElement;
-    const thresholdInput = document.getElementById("threshold-input") as HTMLInputElement;
-    const detectBtn = document.getElementById("detect-btn") as HTMLButtonElement;
-    const cameraStartBtn = document.getElementById("camera-start-btn") as HTMLButtonElement;
-    const cameraCaptureBtn = document.getElementById("camera-capture-btn") as HTMLButtonElement;
-    const cameraStopBtn = document.getElementById("camera-stop-btn") as HTMLButtonElement;
-    const cameraStatus = document.getElementById("camera-status") as HTMLSpanElement;
-    const detectionList = document.getElementById("detection-list") as HTMLDivElement;
+    const uploadPrompt = document.getElementById(
+        "upload-prompt",
+    ) as HTMLDivElement;
+    const cameraVideo = document.getElementById(
+        "camera-video",
+    ) as HTMLVideoElement;
+    const imageCanvas = document.getElementById(
+        "image-canvas",
+    ) as HTMLCanvasElement;
+    const thresholdInput = document.getElementById(
+        "threshold-input",
+    ) as HTMLInputElement;
+    const detectBtn = document.getElementById(
+        "detect-btn",
+    ) as HTMLButtonElement;
+    const cameraStartBtn = document.getElementById(
+        "camera-start-btn",
+    ) as HTMLButtonElement;
+    const cameraCaptureBtn = document.getElementById(
+        "camera-capture-btn",
+    ) as HTMLButtonElement;
+    const cameraStopBtn = document.getElementById(
+        "camera-stop-btn",
+    ) as HTMLButtonElement;
+    const cameraStatus = document.getElementById(
+        "camera-status",
+    ) as HTMLSpanElement;
+    const detectionList = document.getElementById(
+        "detection-list",
+    ) as HTMLDivElement;
 
     state.useGpu = await hasGPU();
     hardwareBadge.innerText = state.useGpu ? "WebGPU" : "WASM";
 
     const liveLoad = startLiveMs(loadMs, 20);
-    const [detector, modelMs] = await Timer.wrap(() => getYoloDetector(state.useGpu))();
+    const [detector, modelMs] = await Timer.wrap(() =>
+        getYoloDetector(state.useGpu),
+    )();
     liveLoad.stop(modelMs);
     state.detectorReady = true;
 
@@ -123,7 +147,7 @@ async function boot() {
         state.detections = [];
 
         uploadPrompt.classList.add("hidden");
-      cameraVideo.classList.add("hidden");
+        cameraVideo.classList.add("hidden");
         imageCanvas.classList.remove("hidden");
         detectBtn.disabled = !state.detectorReady;
 
@@ -161,7 +185,8 @@ async function boot() {
     });
 
     detectBtn.addEventListener("click", async () => {
-        if (!state.currentFile || !state.imageBitmap || !state.detectorReady) return;
+        if (!state.currentFile || !state.imageBitmap || !state.detectorReady)
+            return;
 
         detectBtn.disabled = true;
         detectionList.innerHTML = `<p class="text-slate-400">Detecting objects...</p>`;
@@ -186,13 +211,13 @@ async function boot() {
         }
     });
 
-      if (!navigator.mediaDevices?.getUserMedia) {
+    if (!navigator.mediaDevices?.getUserMedia) {
         cameraStartBtn.disabled = true;
         cameraStatus.innerText = "Camera API unavailable";
         return;
-      }
+    }
 
-      const stopCamera = () => {
+    const stopCamera = () => {
         stopMediaStream(state.cameraStream);
         state.cameraStream = null;
 
@@ -204,67 +229,70 @@ async function boot() {
         cameraStopBtn.disabled = true;
         cameraStartBtn.disabled = false;
         cameraStatus.innerText = "Camera stopped";
-      };
+    };
 
-      cameraStartBtn.addEventListener("click", async () => {
+    cameraStartBtn.addEventListener("click", async () => {
         if (state.cameraStream) return;
 
         cameraStatus.innerText = "Starting camera...";
         try {
-          let stream: MediaStream;
-          try {
-            stream = await navigator.mediaDevices.getUserMedia({
-              video: { facingMode: "environment" },
-              audio: false,
-            });
-          } catch {
-            stream = await navigator.mediaDevices.getUserMedia({
-              video: true,
-              audio: false,
-            });
-          }
+            let stream: MediaStream;
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: "environment" },
+                    audio: false,
+                });
+            } catch {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
+                    audio: false,
+                });
+            }
 
-          state.cameraStream = stream;
-          cameraVideo.srcObject = stream;
-          await cameraVideo.play();
+            state.cameraStream = stream;
+            cameraVideo.srcObject = stream;
+            await cameraVideo.play();
 
-          uploadPrompt.classList.add("hidden");
-          imageCanvas.classList.add("hidden");
-          cameraVideo.classList.remove("hidden");
+            uploadPrompt.classList.add("hidden");
+            imageCanvas.classList.add("hidden");
+            cameraVideo.classList.remove("hidden");
 
-          cameraCaptureBtn.disabled = false;
-          cameraStopBtn.disabled = false;
-          cameraStartBtn.disabled = true;
-          cameraStatus.innerText = "Camera active";
+            cameraCaptureBtn.disabled = false;
+            cameraStopBtn.disabled = false;
+            cameraStartBtn.disabled = true;
+            cameraStatus.innerText = "Camera active";
         } catch (error) {
-          cameraStatus.innerText = `Camera error: ${toErrorMessage(error)}`;
+            cameraStatus.innerText = `Camera error: ${toErrorMessage(error)}`;
         }
-      });
+    });
 
-      cameraCaptureBtn.addEventListener("click", async () => {
+    cameraCaptureBtn.addEventListener("click", async () => {
         if (!state.cameraStream) return;
 
         cameraCaptureBtn.disabled = true;
         cameraStatus.innerText = "Capturing frame...";
 
         try {
-          const cameraFile = await captureVideoFrameToFile(cameraVideo, "yolo-camera");
-          await onFile(cameraFile);
-          cameraStatus.innerText = "Frame captured";
+            const cameraFile = await captureVideoFrameToFile(
+                cameraVideo,
+                "yolo-camera",
+            );
+            await onFile(cameraFile);
+            cameraStatus.innerText = "Frame captured";
         } catch (error) {
-          cameraStatus.innerText = `Capture failed: ${toErrorMessage(error)}`;
+            cameraStatus.innerText = `Capture failed: ${toErrorMessage(error)}`;
         } finally {
-          cameraCaptureBtn.disabled = false;
+            cameraCaptureBtn.disabled = false;
         }
-      });
+    });
 
-      cameraStopBtn.addEventListener("click", () => {
+    cameraStopBtn.addEventListener("click", () => {
         stopCamera();
-      });
+    });
 
-      window.addEventListener("beforeunload", () => {
+    window.addEventListener("beforeunload", () => {
         stopMediaStream(state.cameraStream);
-      });
+    });
 }
 
 function drawPreview(canvas: HTMLCanvasElement, bitmap: ImageBitmap) {
@@ -319,7 +347,8 @@ function denormalizeBox(
     height: number,
 ): [number, number, number, number] {
     const [x1, y1, x2, y2] = box;
-    const looksNormalized = Math.max(Math.abs(x1), Math.abs(y1), Math.abs(x2), Math.abs(y2)) <= 1.5;
+    const looksNormalized =
+        Math.max(Math.abs(x1), Math.abs(y1), Math.abs(x2), Math.abs(y2)) <= 1.5;
 
     if (!looksNormalized) {
         return [x1, y1, x2, y2];
@@ -328,7 +357,10 @@ function denormalizeBox(
     return [x1 * width, y1 * height, x2 * width, y2 * height];
 }
 
-function renderDetectionsList(container: HTMLDivElement, detections: YoloDetection[]) {
+function renderDetectionsList(
+    container: HTMLDivElement,
+    detections: YoloDetection[],
+) {
     if (!detections.length) {
         container.innerHTML = `<p class="text-slate-500">No objects found for the selected threshold.</p>`;
         return;
@@ -369,45 +401,45 @@ function escapeHtml(text: string): string {
         .replaceAll("'", "&#39;");
 }
 
-    async function captureVideoFrameToFile(
-      video: HTMLVideoElement,
-      baseName: string,
-    ): Promise<File> {
-      if (!video.videoWidth || !video.videoHeight) {
+async function captureVideoFrameToFile(
+    video: HTMLVideoElement,
+    baseName: string,
+): Promise<File> {
+    if (!video.videoWidth || !video.videoHeight) {
         throw new Error("Camera has no frame available yet.");
-      }
+    }
 
-      const canvas = document.createElement("canvas");
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
 
-      const context = canvas.getContext("2d");
-      if (!context) {
+    const context = canvas.getContext("2d");
+    if (!context) {
         throw new Error("Could not prepare frame capture context.");
-      }
+    }
 
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      const blob = await new Promise<Blob>((resolve, reject) => {
+    const blob = await new Promise<Blob>((resolve, reject) => {
         canvas.toBlob(
-          (value) => {
-            if (!value) {
-              reject(new Error("Could not encode captured frame."));
-              return;
-            }
-            resolve(value);
-          },
-          "image/png",
-          0.95,
+            (value) => {
+                if (!value) {
+                    reject(new Error("Could not encode captured frame."));
+                    return;
+                }
+                resolve(value);
+            },
+            "image/png",
+            0.95,
         );
-      });
+    });
 
-      return new File([blob], `${baseName}-${Date.now()}.png`, {
+    return new File([blob], `${baseName}-${Date.now()}.png`, {
         type: "image/png",
-      });
-    }
+    });
+}
 
-    function stopMediaStream(stream: MediaStream | null) {
-      if (!stream) return;
-      stream.getTracks().forEach((track) => track.stop());
-    }
+function stopMediaStream(stream: MediaStream | null) {
+    if (!stream) return;
+    stream.getTracks().forEach((track) => track.stop());
+}

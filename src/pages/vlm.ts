@@ -217,7 +217,9 @@ function getDomRefs(): VlmDom {
         uploadPrompt: document.getElementById(
             "upload-prompt",
         ) as HTMLDivElement,
-        cameraVideo: document.getElementById("camera-video") as HTMLVideoElement,
+        cameraVideo: document.getElementById(
+            "camera-video",
+        ) as HTMLVideoElement,
         cameraStartBtn: document.getElementById(
             "camera-start-btn",
         ) as HTMLButtonElement,
@@ -227,7 +229,9 @@ function getDomRefs(): VlmDom {
         cameraStopBtn: document.getElementById(
             "camera-stop-btn",
         ) as HTMLButtonElement,
-        cameraStatus: document.getElementById("camera-status") as HTMLSpanElement,
+        cameraStatus: document.getElementById(
+            "camera-status",
+        ) as HTMLSpanElement,
         imageCanvas: document.getElementById(
             "image-canvas",
         ) as HTMLCanvasElement,

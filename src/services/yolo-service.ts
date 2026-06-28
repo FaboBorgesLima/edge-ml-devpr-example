@@ -6,7 +6,10 @@ export interface YoloDetection {
     bbox: [number, number, number, number];
 }
 
-type ObjectDetectionPipeline = (input: string, options?: unknown) => Promise<unknown>;
+type ObjectDetectionPipeline = (
+    input: string,
+    options?: unknown,
+) => Promise<unknown>;
 
 const YOLOV8_NANO_MODEL = "onnx-community/yolov8n";
 
@@ -97,7 +100,12 @@ function normalizeDetections(rawOutput: unknown): YoloDetection[] {
         parsed.push({
             label,
             score,
-            bbox: [Math.min(x1, x2), Math.min(y1, y2), Math.max(x1, x2), Math.max(y1, y2)],
+            bbox: [
+                Math.min(x1, x2),
+                Math.min(y1, y2),
+                Math.max(x1, x2),
+                Math.max(y1, y2),
+            ],
         });
     }
 
